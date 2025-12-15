@@ -66,7 +66,7 @@ def check_price():
                 reader = csv.DictReader(f)
                 for row in reader:
                     try:
-                        prices.append(float(row["price_eur"]))
+                        prices.append(float(row["price_usd"]))
                     except ValueError:
                         # Skip invalid or missing price values
                         continue
@@ -124,3 +124,4 @@ def update_price(new_price: float):
             "success": False,
             "error": str(e)
         }
+
