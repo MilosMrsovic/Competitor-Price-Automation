@@ -19,9 +19,7 @@ def product_page():
     product = load_product()
     return render_template("product.html", product=product)
 
-# -------------------------
 # UPDATE PRICE ENDPOINT
-# -------------------------
 @app.route("/update-price", methods=["POST"])
 def update_price():
     data = request.json
@@ -37,15 +35,3 @@ def update_price():
 if __name__ == "__main__":
     app.run(debug=True)
 
-
-
-# !!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-import requests
-
-requests.post(
-    "http://127.0.0.1:5000/update-price",
-    json={"price": 450.99}
-)
-
-################################
