@@ -1,0 +1,150 @@
+{
+  "name": "Competition Check & Auto Price Update",
+  "nodes": [
+    {
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "name": "Schedule Trigger",
+      "position": [0, 0]
+    },
+    {
+      "type": "n8n-nodes-base.httpRequest",
+      "name": "HTTP Request",
+      "parameters": {
+        "url": "http://***:***/check_price"
+      },
+      "position": [208, 0]
+    },
+    {
+      "type": "n8n-nodes-base.set",
+      "name": "Edit Fields",
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "name": "old_price",
+              "value": "={{ $json.old_price }}",
+              "type": "number"
+            },
+            {
+              "name": "median_price",
+              "value": "={{ $json.median_price }}",
+              "type": "number"
+            }
+          ]
+        }
+      },
+      "position": [416, 0]
+    },
+    {
+      "type": "n8n-nodes-base.code",
+      "name": "Calculate Price Difference",
+      "parameters": {
+        "jsCode": "const diff = (($input.first().json.median_price - $input.first().json.old_price) / $input.first().json.old_price) * 100;\nreturn {\n  old_price: $input.first().json.old_price,\n  median_price: $input.first().json.median_price,\n  price_diff_percent: Math.abs(diff)\n};"
+      },
+      "position": [624, 0]
+    },
+    {
+      "type": "n8n-nodes-base.if",
+      "name": "Price Difference > 5%",
+      "parameters": {
+        "conditions": {
+          "conditions": [
+            {
+              "leftValue": "={{ $json.price_diff_percent }}",
+              "rightValue": 5,
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              }
+            }
+          ]
+        }
+      },
+      "position": [832, 0]
+    },
+    {
+      "type": "n8n-nodes-base.httpRequest",
+      "name": "Update Price API",
+      "parameters": {
+        "method": "POST",
+        "url": "http://***:***/update_price/{{ $json.median_price }}"
+      },
+      "position": [1040, -96]
+    },
+    {
+      "type": "n8n-nodes-base.gmail",
+      "name": "Send Update Email",
+      "parameters": {
+        "sendTo": "***@***.com",
+        "subject": "Product Price Updated",
+        "message": "Hi Team,<br><br><b>Product Name</b>: {{ $('HTTP Request').item.json.product_title }}<br><b>SKU</b>: {{ $('HTTP Request').item.json.product_sku }}<br><br><b>Old price</b>: {{ $json.old_price }}<br><b>New price</b>: {{ $json.median_price }}<br><br>Automated Pricing System"
+      },
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "***",
+          "name": "***"
+        }
+      },
+      "position": [1248, -96]
+    },
+    {
+      "type": "n8n-nodes-base.gmail",
+      "name": "Send No-Update Email",
+      "parameters": {
+        "sendTo": "***@***.com",
+        "subject": "Price Check Result",
+        "message": "Hi Team,<br><br>The product price is aligned with the market.<br>No update required.<br><br>Automated Pricing System"
+      },
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "***",
+          "name": "***"
+        }
+      },
+      "position": [1040, 128]
+    },
+    {
+      "type": "n8n-nodes-base.googleSheets",
+      "name": "Append Log",
+      "parameters": {
+        "documentId": "***",
+        "sheetName": "***"
+      },
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "***",
+          "name": "***"
+        }
+      },
+      "position": [896, 368]
+    },
+    {
+      "type": "n8n-nodes-base.errorTrigger",
+      "name": "Error Trigger",
+      "position": [0, 368]
+    },
+    {
+      "type": "n8n-nodes-base.gmail",
+      "name": "Send Error Notification",
+      "parameters": {
+        "sendTo": "***@***.com",
+        "subject": "Automation Error",
+        "message": "An error occurred in the pricing automation workflow.<br>Please review the execution logs."
+      },
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "***",
+          "name": "***"
+        }
+      },
+      "position": [1120, 368]
+    }
+  ],
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "meta": {
+    "instanceId": "***"
+  }
+}

@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ product.title }}</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+
+<div class="container">
+    <div class="product-card">
+        <img class="product-image" src="{{ product.image }}" alt="Product">
+        
+        <h1 class="product-title">{{ product.title }}</h1>
+        
+        <p class="product-description">
+            {{ product.description }}
+        </p>
+
+        <div class="price-box">
+            <span class="label">Current Price:</span>
+            <span class="price">${{ product.price }}</span>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
