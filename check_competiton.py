@@ -4,7 +4,7 @@ import json
 import os
 
 # CONFIGURATION
-API_KEY = "***********************************8"  # Your SerpAPI key
+API_KEY = "*****************************************************"  # Your SerpAPI key
 EU_REGIONS = ["de", "fr", "it", "es", "nl"]  # European regions to search
 MAX_RESULTS_PER_PRODUCT = 20  # Maximum results per product
 JSON_PATH = os.path.join("Web_Example", "product_data.json")  # Path to your JSON file
@@ -13,7 +13,7 @@ JSON_PATH = os.path.join("Web_Example", "product_data.json")  # Path to your JSO
 CSV_NAME = "eu_products_prices.csv"
 
 # Keywords to filter out unwanted items
-BAD_KEYWORDS = ["used", "refurbished", "polovno", "second hand", "outlet", "renewed", "pre-owned"]
+BAD_KEYWORDS = ["used", "refurbished", "second hand", "outlet", "renewed", "pre-owned"]
 
 # FUNCTIONS
 def is_valid_item(item):
@@ -92,7 +92,7 @@ def main():
                 results_for_product.append({
                     "product": product_name,  # Keep product name fixed
                     "sku": sku,
-                    "price_eur": item.get("extracted_price"),
+                    "price_usd": item.get("extracted_price"),  # PROMENJENO: price_eur → price_usd
                     "seller": item.get("source"),
                     "region": region.upper(),
                     "link": item.get("product_link", "")
@@ -102,13 +102,10 @@ def main():
     with open(CSV_NAME, "w", newline="", encoding="utf-8") as f:
         writer = csv.DictWriter(
             f,
-            fieldnames=["product", "sku", "price_eur", "seller", "region", "link"]
+            fieldnames=["product", "sku", "price_usd", "seller", "region", "link"]
         )
         writer.writeheader()
         writer.writerows(results_for_product)
-
-    print(f"\n📁 CSV saved (overwritten if existed): {CSV_NAME}")
-    print(f"✅ Found {len(results_for_product)} results for '{product_name}'")
 
 
 if __name__ == "__main__":
