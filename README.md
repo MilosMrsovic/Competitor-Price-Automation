@@ -1,5 +1,7 @@
 # Automated Competitor Price Monitoring & Update System
 
+Built by [Heaq Digital](https://heaqdigital.com), an automation studio for US service businesses. Full write-up: All projects https://heaqdigital.com/projects
+
 This project demonstrates a complete, automated workflow for **monitoring competitor prices, calculating market-based pricing decisions, and updating product prices automatically**, with full orchestration handled by **n8n** and business logic powered by **Python + FastAPI**.
 
 The system is designed as a **real-world business process automation example**, showing how pricing decisions can be made without manual intervention while still keeping visibility and control.
